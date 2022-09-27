@@ -44,6 +44,14 @@ python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+Запуск парсера:
+Перейти в дерикторию `cd bs4_parser_pep/src`
+Ввести в командной строке `python main.py` + обязательный позиционный аргумент и при необходимости, необязательный опциональный аргумент, например:
+
+```
+python main.py whats-new -o pretty
+```
+
 ## Аргументы командной строки:
 ```
 positional arguments:
