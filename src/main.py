@@ -15,8 +15,6 @@ from utils import find_tag, get_response
 def whats_new(session):
     whats_new_url = urljoin(MAIN_DOC_URL, 'whatsnew/')
     response = get_response(session, whats_new_url)
-    if response is None:
-        return
     soup = BeautifulSoup(response.text, features='lxml')
     main_div = find_tag(soup, 'section', attrs={'id': 'what-s-new-in-python'})
     div_with_ul = find_tag(main_div, 'div', attrs={'class': 'toctree-wrapper'})
@@ -31,8 +29,6 @@ def whats_new(session):
         href = version_a_tag['href']
         version_link = urljoin(whats_new_url, href)
         response = get_response(session, version_link)
-        if response is None:
-            return
         soup = BeautifulSoup(response.text, features='lxml')
         h1 = find_tag(soup, 'h1')
         dl = find_tag(soup, 'dl')
@@ -45,8 +41,6 @@ def whats_new(session):
 
 def latest_versions(session):
     response = get_response(session, MAIN_DOC_URL)
-    if response is None:
-        return
     soup = BeautifulSoup(response.text, features='lxml')
     sidebar = find_tag(soup, 'div', {'class': 'sphinxsidebarwrapper'})
     ul_tags = sidebar.find_all('ul')
@@ -77,8 +71,6 @@ def latest_versions(session):
 def download(session):
     downloads_url = urljoin(MAIN_DOC_URL, 'download.html')
     response = get_response(session, downloads_url)
-    if response is None:
-        return
     soup = BeautifulSoup(response.text, features='lxml')
     table_tag = find_tag(soup, 'table', {'class': 'docutils'})
     pdf_a4_tag = find_tag(
@@ -100,8 +92,6 @@ def download(session):
 
 def pep(session):
     response = get_response(session, PEP_DOC_URL)
-    if response is None:
-        return
     soup = BeautifulSoup(response.text, features='lxml')
     section = find_tag(soup, 'section', attrs={'id': 'numerical-index'})
     tbody_tags = find_tag(section, 'tbody')
@@ -116,8 +106,6 @@ def pep(session):
 
         pep_link = urljoin(PEP_DOC_URL, href)
         response = get_response(session, pep_link)
-        if response is None:
-            return
         soup = BeautifulSoup(response.text, features='lxml')
         dl_tags = find_tag(soup, 'dl', {'class': 'rfc2822 field-list simple'})
         status_pep = dl_tags.find(string='Status').find_next('dd').text
@@ -131,7 +119,7 @@ def pep(session):
                 '\nНесовпадающие статусы:\n'
                 f'{pep_link}\n'
                 f'Статус в карточке: {status_pep}\n'
-                f'Ожидаемые статусы:: {EXPECTED_STATUS[status_list[1:]]}'
+                f'Ожидаемые статусы: {EXPECTED_STATUS[status_list[1:]]}'
             )
             logging.info(message)
             if status_pep in results:
@@ -163,7 +151,16 @@ def main():
     if args.clear_cache:
         session.cache.clear()
     parser_mode = args.mode
-    results = MODE_TO_FUNCTION[parser_mode](session)
+    if parser_mode in MODE_TO_FUNCTION:
+        results = MODE_TO_FUNCTION[parser_mode](session)
+    else:
+        message = (
+            '\nНеожиданный аргумент:\n'
+            f'Аргумент в вызове: {parser_mode}\n'
+            f'Ожидаемые аргументы: {MODE_TO_FUNCTION.keys()}'
+        )
+        logging.error(message)
+        return
     if results is not None:
         control_output(results, args)
     logging.info('Парсер завершил работу.')
