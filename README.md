@@ -1,6 +1,7 @@
 <a id="anchor"></a>
 # Парсер Python
 ## Описание:
+Парсер имеет 4 режима работы (аргументы командной строки можно посмотреть введя в терминале из дериктории `src/` команду `python main.py --help`):
 #### whats-new:
   * Собирает важные изменения между основными версиями Python
   * Соберает ссылки на статьи о нововведениях
@@ -17,6 +18,9 @@
   * Сравнивает статус на странице PEP со статусом в общем списке
   * Считает количество PEP в каждом статусе и общее количество PEP
   * Сохраняет результат в табличном виде в csv-файл или выводит в терминал
+  
+## Используемые технологии:
+Python, BeautifulSoup, PrettyTable, tqdm, logging
 
 ## Как запустить проект:
 
@@ -30,17 +34,24 @@ cd bs4_parser_pep/src
 
 Cоздать и активировать виртуальное окружение:
 
+* Если у вас Linux/MacOS
+
+    ```
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+* Если у вас Windows
+
+    ```
+    python -m venv venv
+    source venv/Scripts/activate
+    ```
+
+Установить зависимости из файла requirements.txt:
+
 ```
-python3 -m venv venv
-
-source venv/bin/activate
-
 python3 -m pip install --upgrade pip
-```
-
-Установить зависимости из файла `requirements.txt`:
-
-```
 pip install -r requirements.txt
 ```
 
@@ -66,4 +77,9 @@ optional arguments:
   -o {pretty,file}, --output {pretty,file}
                         Дополнительные способы вывода данных
 ```
+
+### Автор проекта:
+
+Моторин А.В.
+
 [__В начало__](#anchor) :point_up:
